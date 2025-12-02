@@ -34,20 +34,14 @@ pub fn part2() {
             let mut sum: i64 = 0;
             for i in start..=end {
                 let s = &i.to_string();
-                let mut pattern = &s[0..0];
-                for j in 0..s.len() / 2 {
-                    pattern = &s[0..j + 1];
-                    let times_repeated = s.len() / (j + 1);
-                    // Slight speedup
-                    if times_repeated * (j + 1) != s.len() {
+                for pattern_length in 1..(s.len() / 2 + 1) {
+                    // Slight speedup from skipping pattern lengths that the string isn't cleanly divisible by
+                    if s.len() / pattern_length * pattern_length != s.len() {
                         continue;
                     }
-                    let mut repeated_str = String::new();
-                    for _ in 0..times_repeated {
-                        repeated_str.push_str(&pattern);
-                    }
-                    if repeated_str == *s {
-                        sum += i as i64;
+                    // Check if pattern repeats
+                    if (1..s.len()).all(|c| s.chars().nth(c) == s.chars().nth(c % pattern_length)) {
+                        sum += i;
                         break;
                     }
                 }
