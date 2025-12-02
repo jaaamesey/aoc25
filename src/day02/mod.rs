@@ -39,8 +39,8 @@ pub fn part2() {
                     if s.len() / pattern_length * pattern_length != s.len() {
                         continue;
                     }
-                    // Check if pattern repeats
-                    if (1..s.len()).all(|c| s.chars().nth(c) == s.chars().nth(c % pattern_length)) {
+                    // Check if pattern repeats (turns out as_bytes() is way faster than chars().nth() - we don't need to care about unicode)
+                    if (1..s.len()).all(|c| s.as_bytes()[c] == s.as_bytes()[c % pattern_length]) {
                         sum += i;
                         break;
                     }
