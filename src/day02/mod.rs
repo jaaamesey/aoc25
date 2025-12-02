@@ -34,10 +34,14 @@ pub fn part2() {
             let mut sum: i64 = 0;
             for i in start..=end {
                 let s = &i.to_string();
-                let mut pattern = String::new();
+                let mut pattern = &s[0..0];
                 for j in 0..s.len() / 2 {
-                    pattern.push(s.chars().nth(j).unwrap());
+                    pattern = &s[0..j + 1];
                     let times_repeated = s.len() / (j + 1);
+                    // Slight speedup
+                    if times_repeated * (j + 1) != s.len() {
+                        continue;
+                    }
                     let mut repeated_str = String::new();
                     for _ in 0..times_repeated {
                         repeated_str.push_str(&pattern);
