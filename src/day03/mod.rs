@@ -35,8 +35,9 @@ pub fn part2() {
         .lines()
         .map(|line| {
             let line_as_numbers = line
-                .chars()
-                .map(|c| c.to_string().parse::<usize>().unwrap())
+                .as_bytes()
+                .iter()
+                .map(|&b| (b - b'0') as usize)
                 .collect::<Vec<_>>();
 
             let mut combination: usize = 0;
