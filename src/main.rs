@@ -1,8 +1,9 @@
-mod day02;
+#[path = "./day03/mod.rs"]
+mod day;
 
 fn main() {
     let start = std::time::Instant::now();
-    day02::part1();
-    day02::part2();
+    day::part1();
+    day::part2();
     println!("Finished in {:?}", start.elapsed());
 }
