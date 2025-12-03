@@ -22,10 +22,6 @@ pub fn part1() {
                     largest_from_right_idx = i;
                 }
             }
-            dbg!(
-                line_as_numbers[largest_from_left_idx],
-                line_as_numbers[largest_from_right_idx]
-            );
             (line_as_numbers[largest_from_left_idx] * 10) + line_as_numbers[largest_from_right_idx]
         })
         .sum::<u32>();
