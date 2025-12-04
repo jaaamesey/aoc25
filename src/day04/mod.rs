@@ -2,8 +2,7 @@ pub fn part1() {
     let input_str = include_str!("./real_input.txt");
     let grid = input_str
         .lines()
-        // TODO: don't use chars
-        .map(|l| l.chars().map(|c| c == '@').collect::<Vec<_>>())
+        .map(|l| l.bytes().map(|b| b == b'@').collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
     let dirs: [(isize, isize); 8] = [
@@ -25,15 +24,12 @@ pub fn part1() {
             }
             let mut count = 0;
             for (dy, dx) in dirs {
-                if (y < 1 && dy < 0)
-                    || (x < 1 && dx < 0)
-                    || (y > grid.len() - 2 && dy > 0)
-                    || (x > row.len() - 2 && dx > 0)
-                {
-                    continue;
-                }
-                if grid[y.checked_add_signed(dy).unwrap()][x.checked_add_signed(dx).unwrap()] {
-                    count += 1;
+                let ny = y as isize + dy;
+                let nx = x as isize + dx;
+                if ny >= 0 && ny < grid.len() as isize && nx >= 0 && nx < row.len() as isize {
+                    if grid[ny as usize][nx as usize] {
+                        count += 1;
+                    }
                 }
             }
             if count > 3 {
@@ -50,8 +46,7 @@ pub fn part2() {
     let input_str = include_str!("./real_input.txt");
     let mut grid = input_str
         .lines()
-        // TODO: don't use chars
-        .map(|l| l.chars().map(|c| c == '@').collect::<Vec<_>>())
+        .map(|l| l.bytes().map(|b| b == b'@').collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
     let dirs: [(isize, isize); 8] = [
@@ -77,15 +72,12 @@ pub fn part2() {
                 }
                 let mut count = 0;
                 for (dy, dx) in dirs {
-                    if (y < 1 && dy < 0)
-                        || (x < 1 && dx < 0)
-                        || (y > grid.len() - 2 && dy > 0)
-                        || (x > row.len() - 2 && dx > 0)
-                    {
-                        continue;
-                    }
-                    if grid[y.checked_add_signed(dy).unwrap()][x.checked_add_signed(dx).unwrap()] {
-                        count += 1;
+                    let ny = y as isize + dy;
+                    let nx = x as isize + dx;
+                    if ny >= 0 && ny < grid.len() as isize && nx >= 0 && nx < row.len() as isize {
+                        if grid[ny as usize][nx as usize] {
+                            count += 1;
+                        }
                     }
                 }
                 if count > 3 {
