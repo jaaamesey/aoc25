@@ -20,7 +20,7 @@ pub fn part1() {
 }
 
 pub fn part2() {
-    let input_str = include_str!("./test_input.txt");
+    let input_str = include_str!("./real_input.txt");
     let mut ranges = Vec::<(u64, u64)>::new();
     for line in input_str.lines() {
         if line.is_empty() {
@@ -30,25 +30,50 @@ pub fn part2() {
             let min = ls.parse::<u64>().unwrap();
             let max = rs.parse::<u64>().unwrap();
 
+            // Not technically necessary during parsing, but it speeds things up to not add to array early
             if let Some((existing_range_idx, (e_min, e_max))) =
                 ranges.iter().enumerate().find(|(_, (e_min, e_max))| {
                     (min >= *e_min && min <= *e_max) || (min >= *e_min && min <= *e_max)
                 })
             {
-                dbg!(
-                    "Merging: ",
-                    (e_min, e_max),
-                    (min, max),
-                    "to",
-                    (*e_min.min(&min), *e_max.max(&max))
-                );
                 ranges[existing_range_idx] = (*e_min.min(&min), *e_max.max(&max));
             } else {
                 ranges.push((min, max));
             }
         }
     }
-    //dbg!(&ranges);
-
-    dbg!(ranges.iter().map(|(min, max)| max - min).sum::<u64>());
+    loop {
+        let mut num_corrections = 0;
+        for idx in 0..ranges.len() {
+            let (min, max) = ranges[idx];
+            // Slight speedup from skipping tombstones
+            if (min, max) == (0, 0) {
+                continue;
+            }
+            if let Some((existing_range_idx, (e_min, e_max))) =
+                ranges.iter().enumerate().find(|(e_idx, (e_min, e_max))| {
+                    ((min >= *e_min && min <= *e_max) || (min >= *e_min && min <= *e_max))
+                        && *e_idx != idx
+                })
+            {
+                ranges[existing_range_idx] = (*e_min.min(&min), *e_max.max(&max));
+                // Create tombstone
+                ranges[idx] = (0, 0);
+                num_corrections += 1;
+            }
+        }
+        if num_corrections == 0 {
+            break;
+        }
+    }
+    dbg!(
+        ranges
+            .iter()
+            .map(|(min, max)| if *max == 0 && *min == 0 {
+                0
+            } else {
+                (max - min) + 1
+            })
+            .sum::<u64>()
+    );
 }
