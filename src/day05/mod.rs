@@ -71,7 +71,7 @@ pub fn part2() {
     dbg!(
         ranges
             .iter()
-            .map(|(min, max)| if *max == 0 && *min == 0 {
+            .map(|(min, max)| if (min, max) == (&(0 as u64), &(0 as u64)) {
                 0
             } else {
                 (max - min) + 1
