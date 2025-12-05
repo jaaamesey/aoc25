@@ -30,7 +30,9 @@ pub fn part2() {
             let min = ls.parse::<u64>().unwrap();
             let max = rs.parse::<u64>().unwrap();
 
-            // Not technically necessary during parsing, but it speeds things up to not add to array early
+            // Running the core merging logic this early is not technically necessary, but speeds things up a fair bit.
+            // Basically, the first pass eliminates *most* extraneous ranges - it helps to not add those to the array.
+            // The rest are fine to skip over as tombstones later.
             if let Some((existing_range_idx, (e_min, e_max))) =
                 ranges.iter().enumerate().find(|(_, (e_min, e_max))| {
                     (min >= *e_min && min <= *e_max) || (min >= *e_min && min <= *e_max)
@@ -57,7 +59,7 @@ pub fn part2() {
                 })
             {
                 ranges[existing_range_idx] = (*e_min.min(&min), *e_max.max(&max));
-                // Create tombstone
+                // Create tombstone. My input happens to have no ranges with 0 in it, so this is safe.
                 ranges[idx] = (0, 0);
                 num_corrections += 1;
             }
