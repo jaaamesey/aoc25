@@ -39,28 +39,26 @@ pub fn part2() {
 
     let old_grid: Vec<Vec<char>> = input_iter.map(|line| line.chars().collect()).collect();
     let max_old_line_length = old_grid.iter().fold(0, |acc, line| line.len().max(acc));
+
     let transposed_grid = (0..max_old_line_length).map(|x| {
         (0..old_grid.len())
             .map(|y| *old_grid.get(y).unwrap_or(&empty_vec).get(x).unwrap_or(&'_'))
-            .collect::<Vec<_>>()
+            .rev()
+            .filter(|c| !c.is_whitespace())
+            .collect::<String>()
     });
 
     let mut index_in_ops = 0;
     let mut outer_tally = 0;
     let mut current_tally = if ops[index_in_ops] == '+' { 0 } else { 1 };
     for line in transposed_grid {
-        let trimmed_line = line
-            .iter()
-            .rev()
-            .filter(|c| !c.is_whitespace())
-            .collect::<String>();
-        if trimmed_line.is_empty() {
+        if line.is_empty() {
             index_in_ops += 1;
             outer_tally += current_tally;
             current_tally = if ops[index_in_ops] == '+' { 0 } else { 1 };
             continue;
         }
-        let num = trimmed_line.parse::<u64>().unwrap();
+        let num = line.parse::<u64>().unwrap();
         if ops[index_in_ops] == '+' {
             current_tally += num;
         } else {
