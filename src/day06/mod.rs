@@ -25,58 +25,51 @@ pub fn part1() {
 }
 
 pub fn part2() {
-    let input_str = include_str!("./test_input.txt");
+    let input_str = include_str!("./real_input.txt");
+
     let mut input_iter = input_str.lines().rev();
-    let column_ops = input_iter
+    let ops = input_iter
         .next()
         .unwrap()
         .split_whitespace()
         .map(|s| s.chars().next().unwrap())
         .collect::<Vec<char>>();
-    let mut columns = column_ops
-        .iter()
-        .map(|_| Vec::new())
-        .collect::<Vec<Vec<Vec<char>>>>();
-    for line in input_iter {
-        for (column_idx, cell) in line.split_whitespace().enumerate() {
-            columns[column_idx].push(cell.chars().collect());
+
+    let empty_vec = Vec::with_capacity(0);
+
+    let old_grid: Vec<Vec<char>> = input_iter.map(|line| line.chars().collect()).collect();
+    let max_old_line_length = old_grid.iter().fold(0, |acc, line| line.len().max(acc));
+    let transposed_grid: Vec<Vec<char>> = (0..max_old_line_length)
+        .map(|x| {
+            (0..old_grid.len())
+                .map(|y| *old_grid.get(y).unwrap_or(&empty_vec).get(x).unwrap_or(&'_'))
+                .collect()
+        })
+        .collect();
+
+    let mut index_in_ops = 0;
+    let mut outer_tally = 0;
+    let mut current_tally = if ops[index_in_ops] == '+' { 0 } else { 1 };
+    for line in transposed_grid {
+        let trimmed_line = line
+            .iter()
+            .rev()
+            .filter(|c| !c.is_whitespace())
+            .collect::<String>();
+        if trimmed_line.is_empty() {
+            index_in_ops += 1;
+            outer_tally += current_tally;
+            current_tally = if ops[index_in_ops] == '+' { 0 } else { 1 };
+            continue;
+        }
+        let num = trimmed_line.parse::<u64>().unwrap();
+        if ops[index_in_ops] == '+' {
+            current_tally += num;
+        } else {
+            current_tally *= num;
         }
     }
-    // PROBLEM: shifting matters. Need to transpose earlier.
-    dbg!(
-        columns
-            .iter_mut()
-            .enumerate()
-            .map(|(column_idx, column)| {
-                let max_digits = column.iter().fold(0, |acc, curr| acc.max(curr.len()));
-                let mut tally = if column_ops[column_idx] == '+' { 0 } else { 1 };
-                dbg!(column_ops[column_idx]);
-                // Pad columns
-                for cell in column.iter_mut() {
-                    while cell.len() < max_digits {
-                        cell.insert(0, '_');
-                    }
-                }
-                dbg!(&column);
-                for i in (0..max_digits) {
-                    let mut number = 0 as u64;
-                    for j in (0..column.len()) {
-                        if let Some(digit) = column[j].get(i) {
-                            // does this need to be reversed?
-                            if let Ok(parsed_digit) = digit.to_string().parse::<u64>() {
-                                number = (number * 10) + parsed_digit;
-                            }
-                        }
-                    }
-                    if column_ops[column_idx] == '+' {
-                        tally += number;
-                    } else {
-                        tally *= number;
-                    }
-                    dbg!(number);
-                }
-                tally
-            })
-            .sum::<u64>()
-    );
+    outer_tally += current_tally;
+
+    dbg!(&outer_tally);
 }
