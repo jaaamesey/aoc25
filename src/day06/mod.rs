@@ -39,13 +39,11 @@ pub fn part2() {
 
     let old_grid: Vec<Vec<char>> = input_iter.map(|line| line.chars().collect()).collect();
     let max_old_line_length = old_grid.iter().fold(0, |acc, line| line.len().max(acc));
-    let transposed_grid: Vec<Vec<char>> = (0..max_old_line_length)
-        .map(|x| {
-            (0..old_grid.len())
-                .map(|y| *old_grid.get(y).unwrap_or(&empty_vec).get(x).unwrap_or(&'_'))
-                .collect()
-        })
-        .collect();
+    let transposed_grid = (0..max_old_line_length).map(|x| {
+        (0..old_grid.len())
+            .map(|y| *old_grid.get(y).unwrap_or(&empty_vec).get(x).unwrap_or(&'_'))
+            .collect::<Vec<_>>()
+    });
 
     let mut index_in_ops = 0;
     let mut outer_tally = 0;
