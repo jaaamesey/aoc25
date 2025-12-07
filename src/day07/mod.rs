@@ -1,4 +1,4 @@
-use hashbrown::{HashMap, HashSet};
+use hashbrown::HashSet;
 
 pub fn part1() {
     let input_str = include_str!("./real_input.txt");
@@ -43,7 +43,9 @@ pub fn part2() {
         .unwrap()
         .0;
 
-    let mut beam_x_positions = HashMap::with_capacity(20);
+    let line_length = input_str.lines().next().unwrap().len();
+    // index is position, value is number at that position
+    let mut beam_x_positions = vec![0; line_length];
     beam_x_positions.insert(start_x, 1);
 
     for (_, line) in input_iter {
@@ -51,17 +53,15 @@ pub fn part2() {
             if char != '^' {
                 continue;
             }
-            let num_beams = *beam_x_positions.get(&x).unwrap_or(&0);
+            let num_beams = beam_x_positions[x];
             if num_beams < 1 {
                 continue;
             }
 
-            beam_x_positions.remove(&x);
-            let existing_left = *beam_x_positions.get(&(x - 1)).unwrap_or(&0);
-            let existing_rght = *beam_x_positions.get(&(x + 1)).unwrap_or(&0);
-            beam_x_positions.insert(x - 1, existing_left + num_beams);
-            beam_x_positions.insert(x + 1, existing_rght + num_beams);
+            beam_x_positions[x] = 0;
+            beam_x_positions[x - 1] += num_beams;
+            beam_x_positions[x + 1] += num_beams;
         }
     }
-    dbg!(&beam_x_positions.values().sum::<usize>());
+    dbg!(&beam_x_positions.iter().sum::<usize>());
 }
