@@ -13,16 +13,18 @@ pub fn part1() {
         .unwrap()
         .0;
 
-    let mut beam_x_positions = HashSet::with_capacity(20);
-    beam_x_positions.insert(start_x);
+    let line_length = input_str.lines().next().unwrap().len();
+    // index is position, value is number at that position
+    let mut beam_x_positions = vec![false; line_length];
+    beam_x_positions[start_x] = true;
 
     let mut num_splits = 0;
     for (_, line) in input_iter {
         for (x, char) in line.chars().enumerate() {
-            if char == '^' && beam_x_positions.contains(&x) {
-                beam_x_positions.remove(&x);
-                beam_x_positions.insert(x + 1);
-                beam_x_positions.insert(x - 1);
+            if char == '^' && beam_x_positions[x] {
+                beam_x_positions[x] = false;
+                beam_x_positions[x + 1] = true;
+                beam_x_positions[x - 1] = true;
                 num_splits += 1;
             }
         }
@@ -46,7 +48,7 @@ pub fn part2() {
     let line_length = input_str.lines().next().unwrap().len();
     // index is position, value is number at that position
     let mut beam_x_positions = vec![0; line_length];
-    beam_x_positions.insert(start_x, 1);
+    beam_x_positions[start_x] = 1;
 
     for (_, line) in input_iter {
         for (x, char) in line.chars().enumerate() {
