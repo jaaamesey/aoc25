@@ -1,5 +1,3 @@
-use hashbrown::HashSet;
-
 pub fn part1() {
     let input_str = include_str!("./real_input.txt");
     let mut input_iter = input_str.lines().enumerate();
