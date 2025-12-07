@@ -17,11 +17,9 @@ pub fn part1() {
     beam_x_positions.insert(start_x);
 
     let mut num_splits = 0;
-    for (_, line_original) in input_iter {
-        // TODO: Avoid this
-        let line = line_original.chars().collect::<Vec<_>>();
-        for (x, char) in line.iter().enumerate() {
-            if *char == '^' && beam_x_positions.contains(&x) {
+    for (_, line) in input_iter {
+        for (x, char) in line.chars().enumerate() {
+            if char == '^' && beam_x_positions.contains(&x) {
                 beam_x_positions.remove(&x);
                 beam_x_positions.insert(x + 1);
                 beam_x_positions.insert(x - 1);
@@ -48,11 +46,9 @@ pub fn part2() {
     let mut beam_x_positions = HashMap::with_capacity(20);
     beam_x_positions.insert(start_x, 1);
 
-    for (_, line_original) in input_iter {
-        // TODO: Avoid this
-        let line = line_original.chars().collect::<Vec<_>>();
-        for (x, char) in line.iter().enumerate() {
-            if *char != '^' {
+    for (_, line) in input_iter {
+        for (x, char) in line.chars().enumerate() {
+            if char != '^' {
                 continue;
             }
             let num_beams = *beam_x_positions.get(&x).unwrap_or(&0);
