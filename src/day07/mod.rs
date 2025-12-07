@@ -67,6 +67,5 @@ pub fn part2() {
             beam_x_positions.insert(x + 1, existing_rght + num_beams);
         }
     }
-    dbg!(&beam_x_positions);
     dbg!(&beam_x_positions.values().sum::<usize>());
 }
